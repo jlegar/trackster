@@ -5,6 +5,20 @@ $(document).ready(function(){
   $('.btn-search').click(function(){
     Trackster.searchTracksByTitle($('input[name=search_str]').val());
   });
+
+  $('input[name=search_str]').click(function(){
+    $(this).select();
+  })
+
+  $('input[name=search_str]').keypress(function(event){
+    if (event.which == 13) {
+      Trackster.searchTracksByTitle($('input[name=search_str]').val());
+    };
+  });
+
+  $('.glyphicon-remove').click(function(){
+    $('input[name=search_str]').val('');
+  })
 });
 
 /*
@@ -19,7 +33,7 @@ Trackster.renderTracks = function(tracks) {
             '<div class="col-sm-4"> <a href="' + tracks[i].url + '" target="_blank"><span class="glyphicon glyphicon-play-circle"></span></a>' + tracks[i].name + '</div>'+
             '<div class="col-sm-3">' + tracks[i].artist + '</div>'+
             '<div class="col-sm-3"> <img src="' + mediumAlbumArt + '" alt=""> </div>'+
-            '<div class="col-sm-2">' + tracks[i].listeners.toLocaleString("latn") +'</div>'+
+            '<div class="col-sm-2">' + Number(tracks[i].listeners).toLocaleString("latn") +'</div>'+
           '</div>';
     $("#list-data").append(itemStructure);
   };
@@ -30,6 +44,9 @@ Trackster.renderTracks = function(tracks) {
   Render the tracks given in the API query response.
 */
 Trackster.searchTracksByTitle = function(title) {
+  $('.title').animate({
+    opacity: 0.5
+  }, 1000, function(){ $('.title').css('opacity', 1)});
   $.ajax({
     url: 'https://ws.audioscrobbler.com/2.0/?method=track.search&track='+title+'&api_key='+API_KEY+'&format=json',
     success: function(data){
